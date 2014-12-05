@@ -1,0 +1,146 @@
+<html>
+    <head>
+        <title>Shrink</title>
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css"/>
+        <style type="text/css">
+
+            body {
+                background-color: #f2f2f2;
+            }
+
+            label {
+                display: block;
+            }
+
+            input, textarea {
+                border: 1px solid #4d4d4d;
+            }
+
+            input {
+                line-height: 24px;
+            }
+
+            input.function-arg {
+                width: 20%;
+                margin: 0 0 10px 0;
+                display: inline-block;
+            }
+
+            textarea {
+                display: block;
+                width: 100%;
+            }
+
+            button {
+                width: 100%;
+                display: block;
+                line-height: 40px;
+            }
+
+            div.left {
+                border-right: 1px solid #e2e2e2;
+                width: 50%;
+                padding: 30px;
+                float: left;
+            }
+
+            div.right {
+                width: 50%;
+                padding: 30px;
+                float: left;
+            }
+
+            div.bottom {
+                clear: both;
+                border-top: 5px solid #f2f2f2;
+            }
+
+            .btn.btn-primary {
+                line-height: 50px;
+                font-size: 20px;
+            }
+
+        </style>
+        <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript">
+
+            $(document).ready(function() {
+                $("#request").submit(function() {
+                    var arg1 = $("#arg1").val();
+                    var arg2 = $("#arg2").val();
+                    var arg3 = $("#arg3").val();
+                    var args = [];
+
+                    if (arg1) {
+                        args.push(arg1);
+                    }
+
+                    if (arg2) {
+                        args.push(arg2);
+                    }
+
+                    if (arg3) {
+                        args.push(arg3);
+                    }
+
+                    var data = {
+                        "script": $("#script").val(),
+                        "function": $("#function").val(),
+                        "arguments": args,
+                        "exposedJavaClasses": $("#exposedJavaClasses").val().split(/\s*,\s*/)
+                    };
+
+                    $.ajax({
+                        url: "/execute",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(data),
+                        success: function(data) {
+                            $("#result").val(data);
+                        }
+                    });
+
+                    return false;
+                });
+            });
+
+        </script>
+    </head>
+    <body>
+        <div class="left">
+            <form id="request" action="/execute" method="post" role="form">
+                <div class="form-group">
+                    <label>Script</label>
+                    <textarea id="script" name="script" cols="80" rows="10" class="form-control"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Function</label>
+                    <input id="function" name="function" class="form-control"/>
+                </div>
+                <div class="form-group">
+                    <label>Arguments</label>
+                    <input id="arg1" name="arg1" class="form-control function-arg"/>
+                    <input id="arg2" name="arg2" class="form-control function-arg"/>
+                    <input id="arg3" name="arg3" class="form-control function-arg"/>
+                </div>
+                <div class="form-group">
+                    <label>Exposed Java Classes/Packages</label>
+                    <input id="exposedJavaClasses" name="exposedJavaClasses" class="form-control"/>
+                </div>
+                <div class="form-group">
+                    <button id="execute" class="btn btn-primary">Execute</button>
+                </div>
+            </form>
+        </div>
+        <div class="right">
+            <form role="form">
+                <div class="form-group">
+                    <label>Result</label>
+                    <textarea id="result" name="result" cols="80" rows="10" class="form-control"></textarea>
+                </div>
+            </form>
+
+        </div>
+        <div class="bottom"></div>
+    </body>
+</html>
